@@ -270,14 +270,14 @@ select * from service_order;
 ### Formulando perguntas e respondendo com as Queries
 
 
-*SELECIONE OS PEDIDOS EFETUADOS COM OS DADOS DE SEUS DEVIDOS COMPRADORES*
+*INFORME OS EQUIPAMENTOS COM DEFEITOS E SEUS RESPECTIVOS PROPRIETÁRIOS*
 
 ```mysql
-select * from clients inner join orders ON idClient = idOrderClient;
+select * from clients c, orders o where (c.idClient = idOrderClient);
 ```
 -- ou
 ```mysql
-select * from clients as c, orders as o where (c.idClient = o.idOrderClient);
+select * from clients inner join orders ON idClient = idOrderClient;
 ```
 ---------------------------------------------------------------------------
 
@@ -289,51 +289,36 @@ select * from clients order by type_client;
 ---------------------------------------------------------------------------
 
   
-*SELECIONE O TELEFONE DO CLIENTE COM ID NUMERO 8*
+*SELECIONE O TELEFONE DO CLIENTE COM NOME JOÃO*
 ```mysql
-select phone_number FROM clients where idClient = 8;
+select fname as Nome, phone_number as Telefone FROM clients where fname = 'João';
 ```
 ---------------------------------------------------------------------------
-*VERIFIQUE QUAL A QUANTIDADE DE PRODUTOS DISPONÍVEIS EM SP*
+*SELECIONE OS DEFEITO DOS EQUIPAMENTOS COM PRIORIDADE "ALTA"*
 ```mysql
-select sum(quantity) from productstock where stocklocation = 'São Paulo';
+select title_order as Defeito, priority as Prioridade from orders where priority = 'Alta';
 ```
 ---------------------------------------------------------------------------
-*SELECIONE OS PRODUTOS DISPONÍVEIS, SUAS QUANTIDADES E LOCALIDADES*
+*SELECIONE OS EQUIPAMENTOS QUE AINDA NÃO FORAM SOLUCIONADOS E SEUS STATUS*
 ```mysql
-select p.pname, ps.stocklocation, quantity from product as p, productstock as ps where idProduct = idProdStock;
+select descriptions from service_order where solution_date is null;
 ```
 ---------------------------------------------------------------------------
-*SELECIONE OS PEDIDOS QUE FORAM PAGOS POR BOLETO BANCÁRIO*
+*INFORME O NÚMERO DE EQUIPAMENTOS EM RECLAMAÇÃO QUE APRESENTAM PROBLEMAS DE HARDWARE*
 
 ```mysql
 select *  from payment where bank_slipcode > 0;
 ```
----------------------------------------------------------------------------
-*SELECIONE OS PEDIDOS QUE FORAM PAGOS POR CARTÃO DE CRÉDITO*
-```mysql
-select *  from payment where card_number > 0;
-```
----------------------------------------------------------------------------
-*SELECIONE OS PEDIDOS QUE ESTÃO EM PREPARAÇÃO*
-```mysql
-select * from orders where delivery = "Em preparação";
-```
+
 ---------------------------------------------------------------------------
 ### Comandos úteis para verificação das tabelas
 ```mysql
 show tables;
 select * from clients;
 select * from orders;
-select * from payment;
-select * from product;
-select * from product_seller;
-select * from productorder;
-select * from productstock;
-select * from productsupplier;
-select * from seller;
-select * from stocklocation;
-select * from supplier;
+select * from technical;
+select * from send_to;
+select * from service_order;
 ```
 
 
