@@ -16,7 +16,7 @@
 
 
 ## Desafio Parte 1 - Diagrama do Banco de Dados
-[DIAGRAMA DO BANCO DE DADOS]![image](https://github.com/wellingtonb3/ecommerce-ifood/assets/130426959/ee1cd04e-43a8-4763-93ff-4bc6a208a4f8)
+[DIAGRAMA DO BANCO DE DADOS]![image](https://github.com/wellingtonb3/oficina-ifood/blob/main/Oficina-Ifood.png)
 
 [VOLTAR](#oficina-ifood)
 
