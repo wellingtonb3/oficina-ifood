@@ -138,7 +138,7 @@ desc service_order;
 -- desc table_constraints;
 -- desc referential_constraints;
 -- select * from referential_constraints;
--- select * from referential_constraints where constraint_schema = 'ecommerce1';''''
+-- select * from referential_constraints where constraint_schema = 'oficina';
 ```
 
 [VOLTAR](#oficina-ifood)
