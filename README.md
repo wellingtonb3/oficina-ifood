@@ -18,7 +18,7 @@
 ## Desafio Parte 1 - Diagrama do Banco de Dados
 [DIAGRAMA DO BANCO DE DADOS]![image](https://github.com/wellingtonb3/ecommerce-ifood/assets/130426959/ee1cd04e-43a8-4763-93ff-4bc6a208a4f8)
 
-[VOLTAR](#ecommerce-ifood)
+[VOLTAR](#oficina-ifood)
 
 ## Desafio Parte 2 - Script das Tabelas e Constraints
 
@@ -257,7 +257,7 @@ desc payment;
 -- select * from referential_constraints where constraint_schema = 'ecommerce1';''''
 ```
 
-[VOLTAR](#ecommerce-ifood)
+[VOLTAR](#oficina-ifood)
 
 
 ## Desafio Parte 3 - Inserindo Dados no Banco via MySQL
@@ -459,7 +459,7 @@ select * from payment;
 ---------------------------------------------------------------------------
 
 
-[VOLTAR](#ecommerce-ifood)
+[VOLTAR](#oficina-ifood)
 
 
 ## Desafio Parte 4 - Criando Queries
@@ -536,7 +536,6 @@ select * from supplier;
 
 
 [VOLTAR](#oficina-ifood)
-[VOLTAR](#ecommerce-ifood)
 
 
 
