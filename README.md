@@ -25,10 +25,10 @@
 ### Criando o Banco de Dados
 
 ```mysql
--- criação do banco de dados para o cenário de E-commerce
+-- CRIAÇÃO DO BANCO DE DADOS via MySQL Workbench
 
-create database ecommerce1;
-use ecommerce1;
+create database oficina;
+use oficina;
 ```
 
 
@@ -52,194 +52,78 @@ create table clients(
 );
 
 alter table clients auto_increment = 1;
-
 desc clients;
 ```
 
 ------------------------------------------------------------------------
 
-### Criando a Tabela Produto
-
-```mysql
-create table product(
-	idProduct int auto_increment primary key,
-	pname varchar (10) not null, 
-	category enum("Eletrônicos","Vestuario","Brinquedos","Alimentos","Móveis") not null,
-	for_kids bool default false,
-	review float default 0,
-	dimensions varchar(10)
-);
-
-alter table product auto_increment = 1;
-```
-
-
---------------------------------------------------------------------------
-
 ### Criando a Tabela Pedido
-```mysql
 
- create table orders(
+```mysql
+create table orders(
 	idOrder int auto_increment primary key,
-	idOrderClient int,
-	orderstatus ENUM("Cancelado", "Confirmado", "Em processamento") default "Em processamento",
-	orderdescription varchar(255),
-	freight float default 10,
-	delivery ENUM ('Em preparação','Enviado', 'Entregue', 'Extraviado') default "Em preparação",
-        delivery_number varchar(20),
-        constraint fk_orders_client foreign key (idOrderClient) references clients(idClient)                
+	idOrderClient int not null,
+	title_order varchar(45) not null,
+        problem_type ENUM ('Software', 'Hardware') not null,
+        orderdescription varchar(255) not null,
+	priority ENUM ('Baixa','Média', 'Alta') default "Baixa",
+	constraint fk_orders_client foreign key (idOrderClient) references clients(idClient)                
 );
 
 alter table orders auto_increment = 1;
-
 desc orders;
-```
-
--------------------------------------------------------------------------
-
-
-### Criando a tabela Estoque
-```mysql
-
-create table productstock(
-	idProdStock int auto_increment primary key,
-	stocklocation varchar(255),
-	quantity int default 0
-);
-
-alter table productstock auto_increment = 1;
-```
-
-
--------------------------------------------------------------------------
-
-### Criando a tabela Fornecedor
-```mysql
-
-create table supplier(
-	idSupplier int auto_increment primary key,
-	businessname varchar(255) not null,
-	cnpj char(15) not null,
-        phone_number varchar(11) not null,
-        constraint unique_supplier unique (cnpj)
-);
-alter table supplier auto_increment = 1;
-desc supplier;
-```
-
-
------------------------------------------------------------------------
-
-### Criando a tabela Vendedor CNPJ
-```mysql
-
-create table seller(
-	idSeller int auto_increment primary key,
-	businessname varchar(255) not null,
-        companyname varchar(255) not null,
-        address varchar(255),
-	cnpj char(15),
-        cpf char(9),
-        contact char(11) not null,
-        constraint unique_cnpj_seller unique (cnpj),
-        constraint unique_cpf_seller unique (cpf)
-);
-
-alter table seller auto_increment = 1;
-```
-
-
------------------------------------------------------------------------
-
-### Criando a tabela Produtos Vendedor
-```mysql
-
-create table product_seller(
-	idPseller int,
-	idProduct int,
-	prodquantity int default 1,
-	primary key (idPseller, idProduct),
-	constraint fk_product_seller foreign key (idPseller) references seller (idSeller),
-	constraint fk_product_product foreign key (idProduct) references product (idProduct)
-);
-
-desc product_seller;
-```
-
-
--------------------------------------------------------------------------
-
-### Criando a tabela Produto / Pedido
-```mysql
-
-create table productorder(
-	idPOproduct int,
-	idPOorder int,
-	poquantity int default 1,
-	postatus enum ("Disponível","Sem estoque") default "Disponível",
-	primary key (idPOproduct, idPOorder),
-	constraint fk_productorder_seller foreign key (idPOproduct) references product(idProduct),
-	constraint fk_productorder_product foreign key (idPOorder) references orders(idOrder)
-);
 ```
 
 
 --------------------------------------------------------------------------
 
-### Criando a tabela Localização do Estoque
+### Criando a Tabela Responsável Técnico
 ```mysql
+create table technical(
+	idTechnical int auto_increment primary key,
+	worker_name varchar (100),
+        sector varchar (45), 
+	registration varchar (45),
+	functions varchar (45)
+);
 
-create table stocklocation(
-	idLproduct int,
-	idLstock int,
-	location varchar(255) not null,
-	primary key (idLproduct, idLstock),
-	constraint fk_stock_location_product foreign key (idLproduct) references product(idProduct),
-	constraint fk_stock_location_stock foreign key (idLstock) references productStock(idProdStock)
-    );
+alter table technical auto_increment = 1;
+desc technical;
+```
+
+-------------------------------------------------------------------------
+
+
+### Criando a tabela Pedido Gerado
+```mysql
+create table send_to(
+	idSendTo int auto_increment primary key,
+        idTechnical int, 
+	descriptions varchar(255) not null,
+        constraint fk_send_technical foreign key (idTechnical) references technical(idTechnical)		
+);
+
+alter table send_to auto_increment = 1;
+desc send_to;
 ```
 
 
+-------------------------------------------------------------------------
 
----------------------------------------------------------------------------
-
-
-### Criando a tabela Produto Fornecedor
+### Criando a tabela Ordem de Serviço
 ```mysql
 
-create table productsupplier(
-	idPsSupplier int,
-	idPsProduct int,
-	quantity int not null,
-	primary key (idPsSupplier, idPsProduct),
-	constraint fk_product_supplier_supplier foreign key (idPsSupplier) references supplier(idSupplier),
-	constraint fk_product_supplier_product foreign key (idPsProduct) references product (idProduct)
+create table service_order(
+	idServiceOrder int auto_increment primary key,
+        idService int,
+	descriptions varchar(255),
+        warranty ENUM ('SIM','NÃO') default 'NÃO' not null,
+	solution_date DATE,
+	constraint fk_service_send foreign key (idService) references send_to(idSendTo)
 );
-desc productsupplier;
-```
 
-
------------------------------------------------------------------------------
-
-### Criando a tabela Pagamento
-```mysql
-
-create table payment(
-	idPayment int auto_increment primary key,
-	idOPayment int,
-	total_value decimal(10,2) not null,
-	payment_date date not null,
-	type_payment enum ("Boleto", "Cartão de Crédito", "Dois Cartões") not null default "Cartão de Crédito",
-	card_number VARCHAR(16),
-	expiration_date date,
-	security_code varchar(3),
-	bank_slipcode varchar(20),
-	constraint fk_order_payment foreign key (idOPayment) references orders (idOrder),
-	constraint fk_client_payment foreign key (idPayment) references clients (idClient)
-);
-alter table payment auto_increment = 1;
-
-desc payment;
+alter table service_order auto_increment = 1;
+desc service_order;
 ```
 
 
