@@ -150,196 +150,114 @@ desc service_order;
 ### Acessando o Banco de Dados
 ```mysql
 
-use ecommerce1;
+use oficina;
 show tables;
 ```
+
+
 ---------------------------------------------------------------------------
+
 
 ### Populando a tabela Clientes
 ```mysql
 
 desc clients;
--- idClient, type_client, cpf, fname, minit, lname, cnpj, businessname, address, phone_number
+
+-- type_client ENUM('Pessoa Física', 'Pessoa Jurídica') not null, cpf char(11), fname varchar(10),
+--  minit char(3), lname varchar(20), cnpj char(14), businessname varchar(255), address varchar(30),
+--  phone_number varchar(11) not null
 
 insert into clients (type_client, cpf, fname, minit, lname, cnpj, businessname, address, phone_number) values
-	('Pessoa_Física', '29537472910','Maria', 'E', 'Ferreira', null , null, 'Av Treze 41, Jamba - Gusmão', '31 45983385'),
-        ('Pessoa_Jurídica', null, null, null, null, 45284901000321, 'Acording System', 'Rua Jota 32, Pamonhas - Jequi', '41 45983210'),
-	('Pessoa_Física', '29347472910','Maria', 'E', 'Ferreira', null , null, 'Av Treze 41, Jamba - Gusmão', '31 45983385'),
-        ('Pessoa_Física', '48302769178', 'José', 'G', 'Alandra', null, null, 'Rua Santa 52, Gara - Jarandi', '11 49603377'),
-        ('Pessoa_Jurídica', null, null, null, null, 47295789000156, 'Pururu Aços', 'Rua Jota 32, Pamonhas - Jequi', '21 55983567'),
-        ('Pessoa_Física', '48702769331', 'José', 'G', 'Alandra', null, null, 'Rua Dio 36, Ilha - Betiquita', '15 39563355'),
-	('Pessoa_Jurídica', null, null, null, null, 29367912000177, 'Casa Móveis', 'Rua Gari 26, Camba - Jetu', '21 46333567');
+	('Pessoa Física', '47364568712' ,'João', 'B', 'Laffas', null , null, 'Rua Dez 44, Limão - Guto', '23 65448977'),
+        ('Pessoa Jurídica', null, null, null, null, 37487209000167, 'App Gomes', 'Av Olavo 66, Pandas - Jetuba', '61 76339677'),
+        ('Pessoa Física', '34265487818','Mauro', 'C', 'Carrins', null , null, 'Rua Seis 98, Timbre - Goiás', '21 76486722'),
+        ('Pessoa Jurídica', null, null, null, null, 94287390000145, 'Achados', 'Av Garcia 756, Bamba - Jirau', '31 56238799'),
+        ('Pessoa Jurídica', null, null, null, null, 32567359000167, 'Casakinhos', 'Av Jupiter 55, Cieaca - Mutu', '51 78442977');
+
           
 select * from clients;
 ```
 
----------------------------------------------------------------------------
-
-### Populando a tabela Produtos
-```mysql
-
-desc product;
--- idProduct, pname, category ('Eletrônicos','Vestuario','Brinquedos','Alimentos','Móveis'), for_kids boolean, review, dimensions(10)
-
-insert into product (pname, category, for_kids, review, dimensions) values
-	('Gabinete', 'Eletrônicos', false, '5', null),
-        ('Bombons', 'Alimentos', false, '5', null),
-        ('GeForce', 'Eletrônicos', false, '5', null),
-        ('Estante', 'Móveis', false, '3', null),
-        ('Super Mar', 'Brinquedos', true, '4', null),
-        ('Calça Big', 'Vestuario', false, '4', null);
-
-select * from product;
-```
 
 ---------------------------------------------------------------------------
 
-### Populando a tabela Pedidos
+
+### Populando a tabela Pedido
 ```mysql
 
 desc orders;
--- idOrder, idOrderClient, orderstatus, orderdescription, freight, delivery, delivery_number
+-- idOrderClient int not null, title_order varchar(45) not null, problem_type ENUM ('Software', 'Hardware') not null,
+-- orderdescription varchar(255) not null, priority ENUM ('Baixa','Média', 'Alta') default "Baixa"
 
-insert into orders (idOrderClient, orderstatus, orderdescription, freight, delivery, delivery_number) values
-	(8, 'Em processamento', 'Webserver3', 22, 'Em preparação', null ),
-        (9, 'Confirmado', 'Webserver2', 27, 'Enviado', 'BC234654367BR'),
-        (10, 'Em processamento', 'WebServer1', 12, 'Em preparação', 'AB376347656BR'),
-        (11, 'Cancelado', 'Webserver2', 19, null, null);
+insert into orders (idOrderClient, title_order, problem_type, orderdescription, priority) values
+	(1, 'Computador apita', 'Hardware', 'Cliente está usando o equipamento e de repente ele começa a apitar. Problema aleatório', 'Baixa'),
+        (2, 'Monitor oscila', 'Hardware', 'Monitor LCD oscila a imagem. Cliente tem mexido na tela para continuar usando', 'Média'),
+        (3, 'Windows com vírus', 'Software', 'Usuário estava baixando fotos quando o mesmo começou a dar mensagem de vírus', null),
+        (4, 'Computador Não liga', 'Hardware', 'Usuário diz ter chegado de manhã e não conseguido ligar o notebook', 'Alta'),
+        (5, 'Tela do notebook quebrada', 'Hardware', 'Cliente consegue utilizar o equipamento somente no monitor externo', 'Baixa');
+
 
 select * from orders;
+
 ```
+
+
+---------------------------------------------------------------------------
+
+
+### Populando a tabela Responsável Técnico
+```mysql
+
+desc technical;
+-- worker_name varchar (100), sector varchar (45), registration varchar (45), functions varchar (45);
+insert into technical (worker_name, sector, registration, functions) values
+	('Edivaldo', 'Alfândega', 04533, 'Técnico Pleno' ),
+        ('Murilo', 'Diretoria', 04588, 'Técnico Senior'),
+        ('Jennifer', 'Gerência', 04500, 'Gerente Geral');
+
+select * from technical;
+```
+
 
 ------------------------------------------------------------------------
 
-### Populando a tabela Produto / Pedido
+
+### Populando a tabela Pedido Gerado
 ```mysql
 
-desc productorder;
--- idPOproduct, idOorder, poquantity, postatus
+desc send_to;
+-- idTechnical int, descriptions varchar(255) not null, 
+insert into send_to(idTechnical, descriptions) values
+	(2, 'Solicitada a retirada do equipamento. Como o defeito é intermitente, necessário testes'),
+        (1, 'Solicitada a retirada do monitor para possível manutenção'),
+        (3, 'Feito auxílio para a execução do backup pelo cliente. Windows terá que ser reinstalado'),
+        (2, 'Solicitada a retirada em modo de urgência'),
+        (1, 'Agendado a retirada para conserto do equipamento');
+                         
 
-insert into productorder (idPOproduct, idPOorder, poquantity, postatus) values
-	(1,5,2,default),
-        (2,6,1,default),
-        (3,7,1,default);
-
-select * from productorder;
+select * from send_to;
 ```
+
 
 ---------------------------------------------------------------------------
 
-### Populando a tabela Estoque Localização
+
+### Populando a tabela Ordem de Serviço
 ```mysql
 
-desc productstock;
+desc service_order;
+-- descriptions varchar(255), warranty ENUM ('SIM','NÃO') default 'NÃO' not null, solution_date DATE,
+insert into service_order(idService, descriptions, warranty, solution_date) values
+	(1,'Feito a troca do teclado que apresentava problemas intermitentes. Testes ok! ', default, '2023-04-07'),
+        (2,'Feito a troca do LCD que estava com defeito. Liberado! OK!', 'SIM', '2023-04-08'),
+	(3,'Já finalizando a reinstalação do Sistema Operacional', default, null),
+        (4,'Equipamento em laboratório. Até o momento, detectado somente problema na fonte externa' , 'SIM', null),
+        (5,'Aguardando retirada pelo motoboy, que já esteve no local mas não localizou usuário', default, null);
 
-insert into productstock (stocklocation, quantity) values
-	('São Paulo', 1000),
-        ('Santa Catarina', 400),
-        ('São Paulo', 250),
-        ('Minas Gerais', 1000),
-        ('Rio de Janeiro', 230),
-        ('Alagoas', 3000);
-
-select * from productstock;
-```
-                        
----------------------------------------------------------------------
-
-### Populando a tabela Estoque UF
-```mysql
-
-desc stocklocation;
-
-insert into stocklocation (idLproduct, idLstock, location) values
-	(1, 2, 'SP'),
-        (2, 5, 'MG');
-
-select * from stocklocation;
+select * from service_order;
 ```
 
-----------------------------------------------------------------------
-
-### Populando a tabela Fornecedor
-```mysql
-
-desc supplier;
--- idSupplier, businessname, cnpj, phone_number
-
-insert into supplier (businessname, cnpj, phone_number)values
-	('Lan Distribuidora',386556730001-54,'34 34664455'),
-        ('Max Produtos',824556730001-54,'34 34664455'),
-        ('STC Alimentos' ,453956730001-54,'34 34664455');
-
-select * from supplier;
-```
-
----------------------------------------------------------------------------
-
-### Populando a tabela Vendedor
-```mysql
-
-desc seller;
--- idSeller, businessname, companyname, address, cnpj, cpf, contact
-
-insert into seller (businessname, companyname, address, cnpj, cpf, contact) values
-	('Randi ltda', 'Devox', 'Rua Treze, 415 - Landau - Bahia', 543743540001-56, 346756712, 7134556677),
-        ('DVX S/C', 'Ritx', 'Av Eng Heitor, 741 - Amazu - Santa Catarina', 562347450001-65, 744756722, 7139673474),
-        ('Lauaz ltda ME', 'Sac', 'Rua Treze, 658 - Landau - Alagoas', 456783540001-16, 256756755, 5157445655);
-
-select * from seller;   
-```
-
--------------------------------------------------------------------------
-
-### Populando a tabela Produto / Vendedor
-```mysql
-
-desc product_seller;
--- idPseller, idProduct, prodquantity
-
-insert into product_seller (idPseller, idProduct, prodquantity) values
-	(1, 2, 4500),
-        (1, 3, 1500),
-        (3, 4, 440),
-        (2, 5, 500),
-        (1, 611, 100);
-
-select * from product_seller;
-```
-
-----------------------------------------------------------------------
-
-### Populando a tabela Produto Fornecedor
-```mysql
-
-desc productsupplier;
-
-insert into productsupplier (idPsSupplier, idPsProduct, quantity) values
-	(1, 2, 4500),
-        (1, 3, 1500),
-        (3, 4, 440),
-        (2, 5, 500),
-        (1, 6, 100);
-
-select * from productsupplier;
-```
-
--------------------------------------------------------------------------
-
-### Populando a tabela Pagamento
-```mysql
-
-desc payment;
-
-insert into payment (idOPayment, total_value, payment_date, type_payment, card_number, expiration_date, security_code, bank_slipcode) values
-        (5, 229.00, '2023-04-12', default, 4533432275643544, '2027-05-01', 321, null),
-        (6, 124.00, '2023-02-28', 'Boleto', null, null, null, 42376598765367845345),
-        (7, 329.00, '2023-04-14', default, 1267432275643544, '2028-05-01', 221, null),					
-        (8, 125.00, '2023-03-28', 'Boleto', null, null, null, 16776598765367845345);
-
-select * from payment;
-```
-
+			
 ---------------------------------------------------------------------------
 
 
